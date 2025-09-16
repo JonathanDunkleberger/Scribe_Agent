@@ -41,13 +41,21 @@ Generate compelling, personal video essay scripts on any topic with structured o
    ```
 
 4. **Set your API key:**
-   ```bash
-   # Windows PowerShell
-   $env:GOOGLE_API_KEY="your-api-key-here"
-   
-   # macOS/Linux
-   export GOOGLE_API_KEY="your-api-key-here"
-   ```
+    - Option A: Environment variable (one-off)
+       ```bash
+       # Windows PowerShell
+       $env:GOOGLE_API_KEY="your-api-key-here"
+     
+       # macOS/Linux
+       export GOOGLE_API_KEY="your-api-key-here"
+       ```
+    - Option B: .env file (persistent)
+       ```
+       copy .env.example .env   # Windows
+       # or
+       cp .env.example .env     # macOS/Linux
+       # then edit .env and set GOOGLE_API_KEY
+       ```
 
 ### Usage
 

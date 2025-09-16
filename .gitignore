@@ -51,6 +51,9 @@ Thumbs.db
 outputs/
 *.txt
 
+# Keep dependency manifest tracked
+!requirements.txt
+
 # API Keys and Secrets
 .env.local
 .env.production
