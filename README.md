@@ -63,6 +63,25 @@ Generate compelling, personal video essay scripts on any topic with structured o
 python main.py
 ```
 
+Or use the helper script on Windows PowerShell:
+
+```powershell
+.\u005crun.ps1           # creates venv, installs deps, runs
+.ull\run.ps1 -NoInstall  # faster subsequent runs
+```
+
+Health check (verifies key + connectivity):
+
+```powershell
+python .\main.py --check
+```
+
+CLI options (optional):
+
+```bash
+python main.py --topic "The Philosophy of The Matrix" --theme-index 2 --sections 6
+```
+
 Follow the interactive prompts:
 1. Enter your video essay topic
 2. Choose from 5 generated themes  
@@ -158,6 +177,9 @@ Make sure you've set the `GOOGLE_API_KEY` environment variable.
 
 ### "Model not found" 
 Update the model name in `config.py` if Google changes their API.
+
+### "API key not valid"
+This app uses Google AI Studio keys (https://aistudio.google.com/app/apikey), which are different from Google Cloud (Vertex) keys. If you used a Cloud Console key, generate an AI Studio key and put it in `.env` as `GOOGLE_API_KEY`.
 
 ### Long topic names
 The script automatically truncates long filenames to avoid Windows path limits.

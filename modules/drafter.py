@@ -1,26 +1,29 @@
+from __future__ import annotations
+
+import logging
 import google.generativeai as genai
+from typing import Any
 
 def draft_section(
     topic: str,
     theme: str,
     outline_point: str,
     previous_sections: str,
-    model: genai.GenerativeModel,
-    word_count: int = 750
-) -> str:
-    """
-    Drafts a single section of the video essay script.
+    model: Any,
+    word_count: int = 750,
+) -> str | None:
+    """Draft a single section of the video essay.
 
     Args:
-        topic (str): The high-level topic.
-        theme (str): The core theme of the essay.
-        outline_point (str): The specific point from the outline this section should cover.
-        previous_sections (str): The concatenated text of all previously written sections.
-        model (genai.GenerativeModel): The initialized generative model.
-        word_count (int): The target word count for this section.
+        topic: The high-level topic.
+        theme: The core theme of the essay.
+        outline_point: The outline point to cover in this section.
+        previous_sections: Concatenated text of previously drafted sections.
+        model: The configured GenerativeModel instance.
+        word_count: Target word count for this section.
 
     Returns:
-        str: The drafted script for the section.
+        Drafted text as a string, or None on failure.
     """
     print(f"\n✍️ Drafting section: '{outline_point}'...")
 
@@ -58,7 +61,7 @@ def draft_section(
     try:
         response = model.generate_content(prompt)
         print("✅ Section drafted.")
-        return response.text
+        return getattr(response, "text", None)
     except Exception as e:
-        print(f"❌ An unexpected error occurred during drafting: {e}")
-        return ""
+        logging.warning("Drafter: generation error: %s", e)
+        return None

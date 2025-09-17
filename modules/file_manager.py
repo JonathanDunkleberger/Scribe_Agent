@@ -1,5 +1,8 @@
-import os
+from __future__ import annotations
+
+import re
 from datetime import datetime
+from pathlib import Path
 
 def save_script(topic: str, theme: str, sections: list[str], script_text: str) -> str:
     """
@@ -14,22 +17,21 @@ def save_script(topic: str, theme: str, sections: list[str], script_text: str) -
     Returns:
         str: The filename where the script was saved
     """
-    # Create outputs directory if it doesn't exist
-    output_dir = "outputs"
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    # Ensure outputs directory
+    output_dir = Path("outputs")
+    output_dir.mkdir(parents=True, exist_ok=True)
     
     # Generate filename with timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    safe_topic = "".join(c for c in topic if c.isalnum() or c in (' ', '-', '_')).rstrip()
-    safe_topic = safe_topic.replace(' ', '_')
+    base = re.sub(r"[^A-Za-z0-9\-_ ]+", "", topic).strip()
+    safe_topic = re.sub(r"\s+", "_", base)
     
     # Limit the topic length to avoid Windows file path limits
     max_topic_length = 50
     if len(safe_topic) > max_topic_length:
         safe_topic = safe_topic[:max_topic_length]
     
-    filename = f"{output_dir}/script_{safe_topic}_{timestamp}.txt"
+    filename = output_dir / f"script_{safe_topic}_{timestamp}.txt"
     
     # Create the content
     content = f"""VIDEO ESSAY SCRIPT
@@ -46,10 +48,9 @@ SCRIPT:
     
     # Save to file
     try:
-        with open(filename, 'w', encoding='utf-8') as f:
-            f.write(content)
+        filename.write_text(content, encoding='utf-8')
         print(f"✅ Script saved to: {filename}")
-        return filename
+        return str(filename)
     except Exception as e:
         print(f"❌ Error saving script: {e}")
         return ""
