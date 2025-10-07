@@ -29,6 +29,27 @@ from modules.outliner import create_outline
 from modules.drafter import draft_section
 from modules.file_manager import save_script
 
+
+class OfflineMockModel:
+    """Simple mock to emulate generate_content() for offline mode."""
+
+    def __init__(self) -> None:
+        self._counter = 0
+
+    class _Resp:
+        def __init__(self, text: str) -> None:
+            self.text = text
+
+    def generate_content(self, prompt: str):  # type: ignore[override]
+        self._counter += 1
+        # naive branching to supply deterministic JSON for brainstorming/outline
+        if 'Return exactly 5 concise theme sentences' in prompt:
+            return self._Resp('["A thematic exploration of the core ideas.", "Character development across arcs.", "Socio-political commentary embedded in narrative.", "Stylistic evolution and tonal shifts.", "Legacy, reception, and cultural impact."]')
+        if 'Return a strict JSON array of strings' in prompt:
+            return self._Resp('["Introduction and premise.", "Foundational context.", "Deep thematic analysis.", "Counterpoints and complexities.", "Implications and conclusion."]')
+        # drafting section
+        return self._Resp("This is a mock drafted section used in offline mode. It simulates generated prose so you can test the pipeline without a network call.")
+
 def _configure_logging(verbose: bool = False) -> None:
     level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(
@@ -44,6 +65,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--theme-index", type=int, default=None, help="Choose a theme by index (1-based) to skip selection")
     parser.add_argument("--sections", type=int, default=None, help="Number of outline sections (1-12)")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
+    parser.add_argument("--offline", action="store_true", help="Run without real API calls (mock outputs)")
     return parser.parse_args(argv)
 
 
@@ -90,8 +112,12 @@ def main(argv: list[str] | None = None) -> int:
         return _health_check()
 
     try:
-        logging.info("Setting up model…")
-        model = setup_model()
+        if args.offline:
+            logging.info("Using offline mock model (no API calls).")
+            model = OfflineMockModel()
+        else:
+            logging.info("Setting up model…")
+            model = setup_model()
 
         # Topic input
         topic = (args.topic or input("\n📝 Enter your video essay topic: ").strip())
