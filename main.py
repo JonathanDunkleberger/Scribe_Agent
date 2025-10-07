@@ -74,7 +74,7 @@ def _health_check() -> int:
         logging.info("Setting up model for health check…")
         model = setup_model()
         resp = model.generate_content("ping")
-        ok = bool(getattr(resp, "text", "").strip())
+        ok = bool(resp and getattr(resp, "text", "").strip())  # direct .text access expected in current lib
         print("OK" if ok else "FAILED")
         return 0 if ok else 2
     except KeyboardInterrupt:

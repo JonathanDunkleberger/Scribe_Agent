@@ -61,7 +61,7 @@ def draft_section(
     try:
         response = model.generate_content(prompt)
         print("✅ Section drafted.")
-        return getattr(response, "text", None)
+        return response.text if response else None
     except Exception as e:
         logging.warning("Drafter: generation error: %s", e)
         return None

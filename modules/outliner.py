@@ -39,7 +39,7 @@ def create_outline(topic: str, theme: str, model: Any, sections: int = 8) -> lis
 
     try:
         resp = model.generate_content(prompt)
-        text = getattr(resp, "text", "").strip()
+        text = resp.text.strip() if resp else ""
         arr_str = _extract_json_array(text)
         if not arr_str:
             logging.warning("Outliner: no JSON array found in response")

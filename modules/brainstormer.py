@@ -40,7 +40,7 @@ def brainstorm_themes(topic: str, model: Any) -> list[str] | None:
 
     try:
         resp = model.generate_content(prompt)
-        text = getattr(resp, "text", "").strip()
+        text = resp.text.strip() if resp else ""
         arr_str = _extract_json_array(text)
         if not arr_str:
             logging.warning("Brainstormer: no JSON array found in response")
