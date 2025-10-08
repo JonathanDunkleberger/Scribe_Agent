@@ -50,9 +50,11 @@ Thumbs.db
 # Generated Scripts (keep private)
 outputs/
 *.txt
+code_snapshot.txt
 
 # Keep dependency manifest tracked
 !requirements.txt
+!code_snapshot.keep
 
 # API Keys and Secrets
 .env.local
